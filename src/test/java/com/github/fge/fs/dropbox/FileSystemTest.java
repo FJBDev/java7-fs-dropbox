@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class FileSystemTest
 {
-    private static final String ACCESS_TOKEN = "TMgZuYF0foAAAAAAAAACFMqMRgPkNxoRwaiZCigEVbDSnj7g0crpiBli-5_uMJKW";
+    private static final String ACCESS_TOKEN = "TOKEN";
     private static FileSystemProvider provider;
     private static URI uri;
     private static Map<String, String> env;
@@ -93,12 +93,12 @@ public class FileSystemTest
         }
     }
 
-    //@Test(expectedExceptions = DropBoxIOException.class)
+   // @Test
     public void testDirectoryStreamRoot() throws IOException
     {
         try (final FileSystem dropboxfs = provider.newFileSystem(uri, env))
         {
-            Files.newDirectoryStream(dropboxfs.getPath(""));
+        	Assert.assertTrue(Files.exists(dropboxfs.getPath("")));
         }
     }
 
@@ -111,7 +111,7 @@ public class FileSystemTest
         }
     }
     
-    @Test
+  //  @Test
     public void testDirectoryStreamWithFilter() throws IOException
     {
         try (final FileSystem dropboxfs = provider.newFileSystem(uri, env))
@@ -126,7 +126,7 @@ public class FileSystemTest
         		 if (filePath.contains("."))
         		      extension = filePath.substring(filePath.lastIndexOf("."));
         		 
-        		 Assert.assertTrue(extension.equals(".gpx"));
+ Assert.assertTrue(extension.equals(".gpx"));
         	 }
         }
     }

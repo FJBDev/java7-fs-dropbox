@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class FileSystemTest
 {
-    private static final String ACCESS_TOKEN = "yourAccessTokenHere";
+    private static final String ACCESS_TOKEN = "TMgZuYF0foAAAAAAAAACFMqMRgPkNxoRwaiZCigEVbDSnj7g0crpiBli-5_uMJKW";
     private static FileSystemProvider provider;
     private static URI uri;
     private static Map<String, String> env;
@@ -49,12 +49,12 @@ public class FileSystemTest
         final FileSystemRepository repository = new DropBoxFileSystemRepository();
         provider = new DropBoxFileSystemProvider(repository);
 
-        testDirectoryPath = "/test-" + UUID.randomUUID().toString();
+        testDirectoryPath = "UserFiles";//"/test-" + UUID.randomUUID().toString();
 
-        try (final FileSystem dropboxfs = provider.newFileSystem(uri, env))
-        {
-            Files.createDirectory(dropboxfs.getPath(testDirectoryPath));
-        }
+		/*
+		 * try (final FileSystem dropboxfs = provider.newFileSystem(uri, env)) {
+		 * Files.createDirectory(dropboxfs.getPath(testDirectoryPath)); }
+		 */
     }
 
     @BeforeMethod
@@ -65,10 +65,10 @@ public class FileSystemTest
     @AfterClass
     public static void tearDown() throws Exception
     {
-        try (final FileSystem dropboxfs = provider.newFileSystem(uri, env))
-        {
-            deleteRecursive(dropboxfs, dropboxfs.getPath(testDirectoryPath));
-        }
+		/*
+		 * try (final FileSystem dropboxfs = provider.newFileSystem(uri, env)) {
+		 * deleteRecursive(dropboxfs, dropboxfs.getPath(testDirectoryPath)); }
+		 */
     }
 
     private static void deleteRecursive(FileSystem fs, Path directoryPath) throws IOException
@@ -110,6 +110,26 @@ public class FileSystemTest
             Files.newDirectoryStream(dropboxfs.getPath(testDirectoryPath));
         }
     }
+    
+    @Test
+    public void testDirectoryStreamWithFilter() throws IOException
+    {
+        try (final FileSystem dropboxfs = provider.newFileSystem(uri, env))
+        {
+        	DirectoryStream<Path> directoryStream= Files.newDirectoryStream(dropboxfs.getPath(testDirectoryPath), "*.gpx");
+        	
+        	 for (final Path path : directoryStream) {
+        		 
+        		 String filePath = path.getFileName().toString();
+        		 String extension = "";
+
+        		 if (filePath.contains("."))
+        		      extension = filePath.substring(filePath.lastIndexOf("."));
+        		 
+        		 Assert.assertTrue(extension.equals(".gpx"));
+        	 }
+        }
+    }
 
   //  @Test
     public void testCreateFile() throws IOException
@@ -124,7 +144,7 @@ public class FileSystemTest
         {
             thrown = true;
         }
-        Assert.assertTrue(thrown);
+  Assert.assertTrue(thrown);
     }
 
     //@Test

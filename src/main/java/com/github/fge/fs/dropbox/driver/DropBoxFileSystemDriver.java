@@ -35,6 +35,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.spi.FileSystemProvider;
@@ -131,8 +132,12 @@ public final class DropBoxFileSystemDriver
         final List<Path> list = new ArrayList<>(children.size());
 
         for (final Metadata child: children)
+        {
+        	if(filter == null ||
+        		filter.accept(Paths.get(child.getName())))
             list.add(dir.resolve(child.getName()));
-
+        }
+        
         //noinspection AnonymousInnerClassWithTooManyMethods
         return new DirectoryStream<Path>()
         {

@@ -29,7 +29,6 @@ import java.nio.file.Path;
  * exception, however, then such an exception is {@link
  * Throwable#addSuppressed(Throwable) suppressed}.</p>
  *
- * @see FileSystemDriver#newInputStream(Path, OpenOption...)
  */
 @SuppressWarnings("HtmlTagCanBeJavadocTag")
 @ParametersAreNonnullByDefault

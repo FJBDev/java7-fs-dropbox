@@ -24,6 +24,7 @@ public final class DropBoxFileStore
      * Constructor
      *
      * @param client the (valid) DropBox client to use
+     * @param factory
      */
     public DropBoxFileStore(final DbxClientV2 client,
         final FileAttributesFactory factory)

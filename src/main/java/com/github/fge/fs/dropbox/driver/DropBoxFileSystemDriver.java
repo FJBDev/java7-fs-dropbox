@@ -38,9 +38,14 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.nio.file.Watchable;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -379,7 +384,7 @@ public final class DropBoxFileSystemDriver
     public void close()
         throws IOException
     {
-        // TODO: what to do here? DbxClient does not implement Closeable :(
+// TODO: what to do here? DbxClient does not implement Closeable :(
     }
 
     @Nonnull
@@ -392,5 +397,12 @@ public final class DropBoxFileSystemDriver
         } catch (DbxException e) {
             throw DropBoxIOException.wrap(e);
         }
+    }
+    
+    @Nonnull
+    @Override
+    public WatchService newWatchService()
+    {
+    	return new DropboxWatchService(client);
     }
 }

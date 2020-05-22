@@ -167,7 +167,10 @@ public final class DropBoxFileSystemDriver
         
         final List<Metadata> children;
         try {
-            children = client.files().listFolder(target).getEntries();
+        	ListFolderResult folderResult = client.files().listFolderBuilder(target)  
+                    .withRecursive(true) 
+                    .start();
+              children = folderResult.getEntries();
         } catch (DbxException e) {
             throw new DropBoxIOException(e);
         }
@@ -176,8 +179,18 @@ public final class DropBoxFileSystemDriver
         for (final Metadata child: children)
         {
         	if(filter == null ||
-        		filter.accept(Paths.get(child.getName())))
-            list.add(dir.resolve(child.getName()));
+        		filter.accept(Paths.get(child.getName()))) {
+        		String filePath = child.getPathDisplay();
+
+        		 if (child instanceof FileMetadata &&
+        	               filePath.length() > dir.toString().length()) {
+                   filePath = filePath.substring(dir.toString().length() + 1);
+                } else {
+                   filePath = child.getName();
+                }
+
+                list.add(dir.resolve(filePath));
+        	}
         }
         
         //noinspection AnonymousInnerClassWithTooManyMethods

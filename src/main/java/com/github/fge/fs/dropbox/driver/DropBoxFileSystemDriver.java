@@ -184,7 +184,7 @@ public final class DropBoxFileSystemDriver
 
         		 if (child instanceof FileMetadata &&
         	               filePath.length() > dir.toString().length()) {
-                   filePath = filePath.substring(dir.toString().length() + 1);
+                   filePath = filePath.substring(dir.toString().length());
                 } else {
                    filePath = child.getName();
                 }

@@ -167,7 +167,7 @@ public class DropboxWatchService implements WatchService {
          final ListFolderLongpollResult listFolderLongpollResult = new ListFolderLongpollResult(changes, backoff);
 
          return listFolderLongpollResult;
-      } catch (final IOException e) {
+      } catch (final Exception e) {
          //Reached when the dropbox folder watch will be stopped
       }
 
@@ -227,7 +227,7 @@ public class DropboxWatchService implements WatchService {
                }
             }
 
-         } catch (final DbxException | IOException ex) {
+         } catch (final Exception ex) {
          }
       }
 

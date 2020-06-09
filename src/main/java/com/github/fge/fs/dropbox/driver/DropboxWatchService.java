@@ -227,7 +227,7 @@ public class DropboxWatchService implements WatchService {
                }
             }
 
-         } catch (final Exception ex) {
+         } catch (final DbxException | IOException ex) {
          }
       }
 

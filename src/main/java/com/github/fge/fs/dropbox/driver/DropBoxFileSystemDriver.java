@@ -182,7 +182,7 @@ public final class DropBoxFileSystemDriver
         for (final Metadata child: children)
         {
         	if(filter == null ||
-        		filter.accept(Paths.get(child.getName()))) {
+        		filter.accept(Paths.get(child.getName().toLowerCase()))) {
         		
         		list.add(dir.resolve(child.getName()));
         		

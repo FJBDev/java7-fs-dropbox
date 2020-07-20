@@ -167,13 +167,12 @@ public final class DropBoxFileSystemDriver
         
         final List<Metadata> children;
         try {
-        	children = client.files().listFolder(target).getEntries();
         	
-        	// The commented code is to give the ability to see files in nested folders
-//        	ListFolderResult folderResult = client.files().listFolderBuilder(target)  
-//                    .withRecursive(true) 
-//                    .start();
-//              children = folderResult.getEntries();
+        	ListFolderResult folderResult = client.files().listFolderBuilder(target)  
+                    .withRecursive(true) 
+                    .start();
+              children = folderResult.getEntries();
+              
         } catch (DbxException e) {
             throw new DropBoxIOException(e);
         }
@@ -184,19 +183,16 @@ public final class DropBoxFileSystemDriver
         	if(filter == null ||
         		filter.accept(Paths.get(child.getName().toLowerCase()))) {
         		
-        		list.add(dir.resolve(child.getName()));
-        		
-        		// The commented code is to give the ability to see files in nested folders
-//        		String filePath = child.getPathDisplay();
-//
-//        		 if (child instanceof FileMetadata &&
-//        	               filePath.length() > dir.toString().length()) {
-//                   filePath = filePath.substring(dir.toString().length());
-//                } else {
-//                   filePath = child.getName();
-//                }
-//
-//                list.add(dir.resolve(filePath));
+        		String filePath = child.getPathDisplay();
+
+        		 if (child instanceof FileMetadata &&
+        	               filePath.length() > dir.toString().length()) {
+                   filePath = filePath.substring(dir.toString().length());
+                } else {
+                   filePath = child.getName();
+                }
+
+                list.add(dir.resolve(filePath));
         	}
         }
         

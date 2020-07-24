@@ -210,6 +210,9 @@ public class DropboxWatchService implements WatchService {
              }      
             final String cursor = getLatestCursor("");
 
+            //  final ListFolderLongpollResult listFolderLongpollResult = DropboxClient.getDefault().files().listFolderLongpoll(cursor);
+            //  if (listFolderLongpollResult.getChanges()) {
+
             final ListFolderLongpollResult listFolderLongpollResult = listFolderLongpoll(cursor);
             
             if (listFolderLongpollResult == null) {

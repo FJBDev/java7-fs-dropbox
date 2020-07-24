@@ -27,6 +27,7 @@ import com.dropbox.core.v2.files.Metadata;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.ClosedWatchServiceException;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
@@ -34,6 +35,8 @@ import java.nio.file.Watchable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -168,7 +171,7 @@ public class DropboxWatchService implements WatchService {
 
          return listFolderLongpollResult;
       } catch (final Exception e) {
-         //Reached when the dropbox folder watch will be stopped
+         //Reached when the dropbox folder watch will be stopped, socket closed for example
       }
 
       return null;
@@ -192,24 +195,26 @@ public class DropboxWatchService implements WatchService {
     */
    @Override
    public WatchKey take() throws InterruptedException {
+	   
       if (_httpClient == null) {
-         return null;
+    	  throw new ClosedWatchServiceException();
       }
-
+      
       _hasChanges = new AtomicBoolean(false);
       _continuePolling = true;
 
       while (_hasChanges.get() == false && _continuePolling) {
-         try {
-
+         try {        	 
+             if (_httpClient == null) {            	 
+            	 throw new ClosedWatchServiceException();
+             }      
             final String cursor = getLatestCursor("");
 
-            //  final ListFolderLongpollResult listFolderLongpollResult = DropboxClient.getDefault().files().listFolderLongpoll(cursor);
-            //  if (listFolderLongpollResult.getChanges()) {
-
             final ListFolderLongpollResult listFolderLongpollResult = listFolderLongpoll(cursor);
+            
             if (listFolderLongpollResult == null) {
-               continue;
+            	_continuePolling = false;   
+            	continue;
             }
             if (listFolderLongpollResult.getChanges()) {
                examineChanges(cursor);
@@ -218,15 +223,12 @@ public class DropboxWatchService implements WatchService {
             // we were asked to back off from our polling, wait the requested amount of seconds
             // before issuing another longpoll request.
             final Long backoff = listFolderLongpollResult.getBackoff();
-            if (backoff != null) {
-               try {
-                  // backing off for %d secs...\n", backoff.longValue());s
-                  Thread.sleep(TimeUnit.SECONDS.toMillis(backoff));
-               } catch (final InterruptedException ex) {
-            	   throw new IOException("Error when backing off from watching the Dropbox folder", ex);
-               }
+            if (backoff != null) {               
+              // backing off for %d secs...\n", backoff.longValue());s
+              Thread.sleep(TimeUnit.SECONDS.toMillis(backoff));               
             }
-
+         } catch (InterruptedException e) {        	 
+        	 throw e;
          } catch (final DbxException | IOException ex) {
          }
       }

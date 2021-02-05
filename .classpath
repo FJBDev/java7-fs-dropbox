@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="src/resources/java7-fs-base-0.0.3.jar"/>
+	<classpathentry kind="lib" path="src/resources/dropbox-core-sdk-3.1.5.jar"/>
+	<classpathentry kind="lib" path="src/resources/httpclient-4.5.13.jar"/>
+	<classpathentry kind="lib" path="src/resources/httpcore-4.4.14.jar"/>
+	<classpathentry kind="lib" path="src/resources/json-20201115.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

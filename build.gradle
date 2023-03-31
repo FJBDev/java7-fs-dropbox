@@ -33,12 +33,11 @@ buildscript {
 }
 
 apply(plugin: "java")
-apply(plugin: "maven")
+apply(plugin: "maven-publish")
 apply(plugin: "signing")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
-apply(plugin: "propdeps-maven")
 apply(plugin: "propdeps-idea")
 apply(plugin: "propdeps-eclipse")
 apply(plugin: "info.solidsoft.pitest")
@@ -63,21 +62,21 @@ repositories {
 dependencies {
     provided(group: "com.github.fge", name: "java7-fs-base",
         version: "0.0.3")
-    compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
+    implementation(group: "com.dropbox.core", name: "dropbox-core-sdk",
         version: "3.1.4")
-    compile(group: "org.json", name: "json", version: "20190722")
-    compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.12")
+    implementation(group: "org.json", name: "json", version: "20190722")
+    implementation(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.12")
     provided(group: "com.google.code.findbugs", name: "jsr305",
         version: "3.0.0")
-    testCompile(group: "org.testng", name: "testng", version: "6.8.8") {
+    testImplementation(group: "org.testng", name: "testng", version: "6.8.8") {
         exclude(group: "junit", module: "junit")
         exclude(group: "org.beanshell", module: "bsh")
         exclude(group: "org.yaml", module: "snakeyaml")
     }
-    testCompile(group: "org.mockito", name: "mockito-core", version: "1.10.8")
-    testCompile(group: "org.assertj", name: "assertj-core", version: "1.7.0")
+    testImplementation(group: "org.mockito", name: "mockito-core", version: "1.10.8")
+    testImplementation(group: "org.assertj", name: "assertj-core", version: "1.7.0")
 
-    testCompile(group: "com.github.marschall", name: "memoryfilesystem", version: "1.0.1")
+    testImplementation(group: "com.github.marschall", name: "memoryfilesystem", version: "1.0.1")
 
 }
 
@@ -117,14 +116,15 @@ artifacts {
     archives javadocJar
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = "5.6"
+wrapper{
+    gradleVersion = "7.1.1"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
-task pom << {
+task pom {
+	doLast {
     pom {}.writeTo("${projectDir}/pom.xml")
-}
+}}
 
 /*
  * SIGNING
@@ -138,7 +138,7 @@ project.ext {
     sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-task checkSigningRequirements << {
+task checkSigningRequirements  {	doLast {
     def requiredProperties = [ "sonatypeUsername", "sonatypePassword" ]
     def noDice = false
     requiredProperties.each {
@@ -150,7 +150,7 @@ task checkSigningRequirements << {
     if (noDice)
         throw new IllegalStateException("missing required properties for " +
             "upload")
-}
+}}
 
 uploadArchives {
     dependsOn(checkSigningRequirements)

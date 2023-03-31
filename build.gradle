@@ -20,13 +20,13 @@
 buildscript {
     repositories {
         maven {
-            url "http://repo.springsource.org/plugins-release"
+            url "https://repo.spring.io/plugins-release"
             mavenCentral()
         }
     }
     dependencies {
-        classpath(group: "org.springframework.build.gradle",
-            name: "propdeps-plugin", version: "0.0.7")
+        classpath(group: "io.spring.gradle",
+            name: "propdeps-plugin", version: "0.0.10.RELEASE")
         classpath(group: "info.solidsoft.gradle.pitest",
             name: "gradle-pitest-plugin", version: "1.1.1")
     }
@@ -35,7 +35,6 @@ buildscript {
 apply(plugin: "java")
 apply(plugin: "maven")
 apply(plugin: "signing")
-apply(plugin: "osgi")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
@@ -45,7 +44,7 @@ apply(plugin: "propdeps-eclipse")
 apply(plugin: "info.solidsoft.pitest")
 
 group = "com.github.fge"
-version = "0.0.3"
+version = "0.0.4"
 description = "FileSystem implementation over DropBox"
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7" // defaults to sourceCompatibility
@@ -119,7 +118,7 @@ artifacts {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "6.8.2"
+    gradleVersion = "5.6"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 

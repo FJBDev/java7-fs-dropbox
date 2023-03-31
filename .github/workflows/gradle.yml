@@ -33,6 +33,6 @@ jobs:
     
     - name: Execute Gradle build
     - uses: gradle/gradle-build-action@v2
+      run: ./gradlew build
       with:
         gradle-version: 6.5
-      run: ./gradlew build

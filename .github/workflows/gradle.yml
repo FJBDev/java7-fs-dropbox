@@ -36,9 +36,9 @@ jobs:
     - name: Execute Gradle build
       run: ./gradlew build
 
-      - name: Upload Jar file
-        uses: actions/upload-artifact@v3
-        with:
-          name: toto.jar
-          path: D:\build\libs\**.*
-          retention-days: 5
+    - name: Upload Jar file
+      uses: actions/upload-artifact@v3
+      with:
+        name: toto.jar
+        path: D:\build\libs\**.*
+        retention-days: 5

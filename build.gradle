@@ -117,7 +117,7 @@ artifacts {
 }
 
 wrapper{
-    gradleVersion = "7.1.1"
+    gradleVersion = "6.8.2"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
@@ -152,13 +152,14 @@ task checkSigningRequirements  {	doLast {
             "upload")
 }}
 
+/*
 uploadArchives {
     dependsOn(checkSigningRequirements)
     repositories {
         mavenDeployer {
-            //beforeDeployment {
-           //     MavenDeployment deployment -> signing.signPom(deployment)
-         //   }
+            beforeDeployment {
+                MavenDeployment deployment -> signing.signPom(deployment)
+         /   }
 
             repository(url: "${sonatypeStaging}") {
                 authentication(
@@ -176,10 +177,11 @@ uploadArchives {
         }
     }
 }
-
+*/
 /*
  * Configure pom.xml on install, uploadArchives
  */
+ /*
 [
     install.repositories.mavenInstaller,
     uploadArchives.repositories.mavenDeployer
@@ -218,6 +220,7 @@ uploadArchives {
         }
     }
 }
+*/
 
 ext.forRelease = !version.endsWith("-SNAPSHOT")
 signing {

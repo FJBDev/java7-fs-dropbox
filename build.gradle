@@ -20,13 +20,13 @@
 buildscript {
     repositories {
         maven {
-            url "https://repo.spring.io/ui/native/plugins-release"
+            url "https://repo.spring.io/plugins-snapshot"
             mavenCentral()
         }
     }
     dependencies {
         classpath(group: "io.spring.gradle",
-            name: "propdeps-plugin", version: "0.0.10.RELEASE")
+            name: "propdeps-plugin", version: "0.0.9.BUILD-SNAPSHOT")
         classpath(group: "info.solidsoft.gradle.pitest",
             name: "gradle-pitest-plugin", version: "1.1.1")
     }
@@ -102,7 +102,7 @@ artifacts {
 }
 
 wrapper{
-    gradleVersion = "6.8.2"
+    gradleVersion = "8.9"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 

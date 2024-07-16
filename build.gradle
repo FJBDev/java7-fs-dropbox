@@ -20,7 +20,7 @@
 buildscript {
     repositories {
         maven {
-            url "https://repo.spring.io/plugins-release"
+            url "https://repo.spring.io/ui/native/plugins-release"
             mavenCentral()
         }
     }

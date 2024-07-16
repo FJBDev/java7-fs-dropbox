@@ -45,8 +45,8 @@ apply(plugin: "info.solidsoft.pitest")
 group = "com.github.fge"
 version = "0.0.4"
 description = "FileSystem implementation over DropBox"
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8" // defaults to sourceCompatibility
+sourceCompatibility = "21"
+targetCompatibility = "21" // defaults to sourceCompatibility
 
 /*
  * Repositories to use
@@ -63,7 +63,7 @@ dependencies {
     provided(group: "com.github.fge", name: "java7-fs-base",
         version: "0.0.3")
     implementation(group: "com.dropbox.core", name: "dropbox-core-sdk",
-        version: "5.4.4")
+        version: "7.0.0")
     implementation(group: "org.json", name: "json", version: "20190722")
     implementation(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.12")
     provided(group: "com.google.code.findbugs", name: "jsr305",

@@ -46,8 +46,8 @@ apply(plugin: "info.solidsoft.pitest")
 group = "com.github.fge"
 version = "0.0.3"
 description = "FileSystem implementation over DropBox"
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7" // defaults to sourceCompatibility
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8" // defaults to sourceCompatibility
 
 /*
  * Repositories to use

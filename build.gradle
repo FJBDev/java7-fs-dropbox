@@ -35,6 +35,7 @@ buildscript {
 apply(plugin: "java")
 apply(plugin: "maven")
 apply(plugin: "signing")
+apply(plugin: "osgi")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
@@ -117,15 +118,13 @@ artifacts {
     archives javadocJar
 }
 
-wrapper {
-    gradleVersion = "2.2"
+task wrapper(type: Wrapper) {
+    gradleVersion = "6.8.2"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
-task pom {
- doLast {
+task pom << {
     pom {}.writeTo("${projectDir}/pom.xml")
-}
 }
 
 /*
@@ -140,8 +139,7 @@ project.ext {
     sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-task checkSigningRequirements  {
- doLast {
+task checkSigningRequirements << {
     def requiredProperties = [ "sonatypeUsername", "sonatypePassword" ]
     def noDice = false
     requiredProperties.each {
@@ -153,7 +151,6 @@ task checkSigningRequirements  {
     if (noDice)
         throw new IllegalStateException("missing required properties for " +
             "upload")
-}
 }
 
 uploadArchives {

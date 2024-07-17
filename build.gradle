@@ -25,28 +25,29 @@ buildscript {
         }
     }
     dependencies {
-        classpath(group: "io.spring.gradle",
-            name: "propdeps-plugin", version: "0.0.9.BUILD-SNAPSHOT")
+        classpath(group: "org.springframework.build.gradle",
+            name: "propdeps-plugin", version: "0.0.7-SNAPSHOT")
         classpath(group: "info.solidsoft.gradle.pitest",
             name: "gradle-pitest-plugin", version: "1.1.1")
     }
 }
 
 apply(plugin: "java")
-apply(plugin: "maven-publish")
+apply(plugin: "maven")
 apply(plugin: "signing")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
+apply(plugin: "propdeps-maven")
 apply(plugin: "propdeps-idea")
 apply(plugin: "propdeps-eclipse")
 apply(plugin: "info.solidsoft.pitest")
 
 group = "com.github.fge"
-version = "0.1.0"
+version = "0.0.3"
 description = "FileSystem implementation over DropBox"
-sourceCompatibility = "17"
-targetCompatibility = "17" // defaults to sourceCompatibility
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7" // defaults to sourceCompatibility
 
 /*
  * Repositories to use
@@ -62,23 +63,27 @@ repositories {
 dependencies {
     provided(group: "com.github.fge", name: "java7-fs-base",
         version: "0.0.3")
-    implementation(group: "com.dropbox.core", name: "dropbox-core-sdk",
-        version: "7.0.0")
-    implementation(group: "org.json", name: "json", version: "20190722")
-    implementation(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.12")
+    compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
+        version: "3.1.4")
+    compile(group: "org.json", name: "json", version: "20190722")
+    compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.12")
     provided(group: "com.google.code.findbugs", name: "jsr305",
         version: "3.0.0")
-    testImplementation(group: "org.testng", name: "testng", version: "6.8.8") {
+    testCompile(group: "org.testng", name: "testng", version: "6.8.8") {
         exclude(group: "junit", module: "junit")
         exclude(group: "org.beanshell", module: "bsh")
         exclude(group: "org.yaml", module: "snakeyaml")
     }
-    testImplementation(group: "org.mockito", name: "mockito-core", version: "1.10.8")
-    testImplementation(group: "org.assertj", name: "assertj-core", version: "1.7.0")
+    testCompile(group: "org.mockito", name: "mockito-core", version: "1.10.8")
+    testCompile(group: "org.assertj", name: "assertj-core", version: "1.7.0")
 
-    testImplementation(group: "com.github.marschall", name: "memoryfilesystem", version: "1.0.1")
+    testCompile(group: "com.github.marschall", name: "memoryfilesystem", version: "1.0.1")
 
 }
+
+javadoc.options.links("http://docs.oracle.com/javase/7/docs/api/")
+javadoc.options.links("http://jsr-305.googlecode.com/svn/trunk/javadoc/")
+javadoc.options.links("http://dropbox.github.io/dropbox-sdk-java/api-docs/v1.7.x/")
 
 /*
  * Necessary! Otherwise TestNG will not be used...
@@ -93,19 +98,35 @@ pitest {
     pitestVersion = "1.1.2" // see https://github.com/hcoles/pitest/issues/150
 }
 
-artifacts {
-    archives jar
+/*
+ * Necessary to generate the source and javadoc jars
+ */
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
 }
 
-wrapper{
-    gradleVersion = "6.8.2"
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+wrapper {
+    gradleVersion = "2.2"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
 task pom {
-	doLast {
+ doLast {
     pom {}.writeTo("${projectDir}/pom.xml")
-}}
+}
+}
 
 /*
  * SIGNING
@@ -119,7 +140,8 @@ project.ext {
     sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-task checkSigningRequirements  {	doLast {
+task checkSigningRequirements  {
+ doLast {
     def requiredProperties = [ "sonatypeUsername", "sonatypePassword" ]
     def noDice = false
     requiredProperties.each {
@@ -131,16 +153,16 @@ task checkSigningRequirements  {	doLast {
     if (noDice)
         throw new IllegalStateException("missing required properties for " +
             "upload")
-}}
+}
+}
 
-/*
 uploadArchives {
     dependsOn(checkSigningRequirements)
     repositories {
         mavenDeployer {
             beforeDeployment {
                 MavenDeployment deployment -> signing.signPom(deployment)
-         /   }
+            }
 
             repository(url: "${sonatypeStaging}") {
                 authentication(
@@ -158,11 +180,10 @@ uploadArchives {
         }
     }
 }
-*/
+
 /*
  * Configure pom.xml on install, uploadArchives
  */
- /*
 [
     install.repositories.mavenInstaller,
     uploadArchives.repositories.mavenDeployer
@@ -201,7 +222,6 @@ uploadArchives {
         }
     }
 }
-*/
 
 ext.forRelease = !version.endsWith("-SNAPSHOT")
 signing {

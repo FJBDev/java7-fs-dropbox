@@ -40,5 +40,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: toto.jar
-        path: /**/**.jar
+        path: ./**/**.jar
         retention-days: 5

@@ -45,8 +45,8 @@ apply(plugin: "info.solidsoft.pitest")
 group = "com.github.fge"
 version = "0.0.4"
 description = "FileSystem implementation over DropBox"
-sourceCompatibility = "21"
-targetCompatibility = "21" // defaults to sourceCompatibility
+sourceCompatibility = "11"
+targetCompatibility = "11" // defaults to sourceCompatibility
 
 /*
  * Repositories to use
@@ -102,7 +102,7 @@ artifacts {
 }
 
 wrapper{
-    gradleVersion = "8.9"
+    gradleVersion = "6.8.2"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 

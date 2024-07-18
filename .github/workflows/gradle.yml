@@ -34,6 +34,8 @@ jobs:
         gradle-version: 5.6
     
     - name: Execute Gradle build
+      env:
+          DROPBOX_ACCESSTOKEN: ${{ secrets.DROPBOX_ACCESSTOKEN }}
       run: ./gradlew build
 
     - name: Upload Jar file

@@ -7,14 +7,11 @@ import com.github.fge.filesystem.provider.FileSystemRepositoryBase;
 import com.github.fge.fs.dropbox.driver.DropBoxFileSystemDriver;
 import com.github.fge.fs.dropbox.filestore.DropBoxFileStore;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 
-@ParametersAreNonnullByDefault
 public final class DropBoxFileSystemRepository
     extends FileSystemRepositoryBase
 {
@@ -26,7 +23,6 @@ public final class DropBoxFileSystemRepository
         super("dropbox", new DropboxFileSystemFactoryProvider());
     }
 
-    @Nonnull
     @Override
     public FileSystemDriver createDriver(final URI uri,
         final Map<String, ?> env)

@@ -8,6 +8,7 @@ import com.dropbox.core.v2.files.CreateFolderResult;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.FolderMetadata;
 import com.dropbox.core.v2.files.GetMetadataErrorException;
+import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.files.RelocationResult;
 import com.dropbox.core.v2.files.UploadUploader;
@@ -19,8 +20,6 @@ import com.github.fge.fs.dropbox.misc.DropBoxIOException;
 import com.github.fge.fs.dropbox.misc.DropBoxInputStream;
 import com.github.fge.fs.dropbox.misc.DropBoxOutputStream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,7 +34,9 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.WatchService;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
@@ -45,7 +46,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("OverloadedVarargsMethod")
-@ParametersAreNonnullByDefault
 public final class DropBoxFileSystemDriver
     extends UnixLikeFileSystemDriverBase
 {
@@ -58,19 +58,30 @@ public final class DropBoxFileSystemDriver
         this.client = client;
     }
 
-    @Nonnull
     @Override
     public InputStream newInputStream(final Path path,
         final Set<OpenOption> options)
         throws IOException
     {
-        final String target = path.toRealPath().toString();
-        final Metadata metadata = getMetadata(target);
 
-        // TODO: metadata driver
-        if (metadata instanceof FolderMetadata)
-            throw new IsDirectoryException(target);
+        String target = path.toRealPath().toString();
 
+       	//Note: Metadata for the root folder is unsupported. 
+       	// Source : https://www.dropbox.com/developers/documentation/http/documentation
+       if(target.equals("/"))
+       {
+           // The empty string ("") represents the root folder not "/"
+          	// Source: https://www.dropbox.com/developers/documentation/http/documentation 
+       	target = "";
+       }
+       else
+       {
+           final Metadata metadata = getMetadata(target);
+
+           if (metadata instanceof FolderMetadata)
+               throw new IsDirectoryException(target);
+       }
+        
         final DbxDownloader<FileMetadata> downloader;
 
         try {
@@ -82,24 +93,35 @@ public final class DropBoxFileSystemDriver
         return new DropBoxInputStream(downloader);
     }
 
-    @Nonnull
     @Override
     public OutputStream newOutputStream(final Path path,
         final Set<OpenOption> options)
         throws IOException
     {
-        final String target = path.toRealPath().toString();
-        Metadata metadata = null;
-        try {
-            metadata = getMetadata(target);
-        } catch (NoSuchFileException e) {
-            //ignore
-        }
+        String target = path.toRealPath().toString();
 
-        // TODO: metadata
-        if (metadata instanceof FolderMetadata)
-            throw new IsDirectoryException(target);
+       	//Note: Metadata for the root folder is unsupported. 
+       	// Source : https://www.dropbox.com/developers/documentation/http/documentation
+       if(target.equals("/"))
+       {
+           // The empty string ("") represents the root folder not "/"
+          	// Source: https://www.dropbox.com/developers/documentation/http/documentation 
+       	target = "";
+       }
+       else
+       {
+    	   Metadata metadata = null;
+           try {
+               metadata = getMetadata(target);
+           } catch (NoSuchFileException e) {
+               //ignore
+           }
 
+           // TODO: metadata
+           if (metadata instanceof FolderMetadata)
+               throw new IsDirectoryException(target);
+          }   
+       
         final UploadUploader uploader;
         try {
             uploader = client.files().uploadBuilder(target).withMode(WriteMode.OVERWRITE).start();
@@ -110,29 +132,64 @@ public final class DropBoxFileSystemDriver
         return new DropBoxOutputStream(uploader);
     }
 
-    @Nonnull
     @Override
     public DirectoryStream<Path> newDirectoryStream(final Path dir,
         final DirectoryStream.Filter<? super Path> filter)
         throws IOException
     {
-        final String target = dir.toRealPath().toString();
-        final Metadata dirMetadata = getMetadata(target);
+         String target = dir.toRealPath().toString();
 
-        if (!(dirMetadata instanceof FolderMetadata))
-            throw new NotDirectoryException(target);
+        	//Note: Metadata for the root folder is unsupported. 
+        	// Source : https://www.dropbox.com/developers/documentation/http/documentation
+        if(target.equals("/"))
+        {
+            // The empty string ("") represents the root folder not "/"
+           	// Source: https://www.dropbox.com/developers/documentation/http/documentation 
+        	target = "";
+        }
+        else
+        {
+            final Metadata dirMetadata = getMetadata(target);
 
+            if (!(dirMetadata instanceof FolderMetadata))
+                throw new NotDirectoryException(target);
+        }
+        
         final List<Metadata> children;
         try {
-            children = client.files().listFolder(target).getEntries();
+        	children = client.files().listFolder(target).getEntries();
+        	
+        	// The commented code is to give the ability to see files in nested folders
+//        	ListFolderResult folderResult = client.files().listFolderBuilder(target)  
+//                    .withRecursive(true) 
+//                    .start();
+//              children = folderResult.getEntries();
         } catch (DbxException e) {
             throw new DropBoxIOException(e);
         }
         final List<Path> list = new ArrayList<>(children.size());
 
         for (final Metadata child: children)
-            list.add(dir.resolve(child.getName()));
-
+        {
+        	if(filter == null ||
+        		filter.accept(Paths.get(child.getName().toLowerCase()))) {
+        		
+        		list.add(dir.resolve(child.getName()));
+        		
+        		// The commented code is to give the ability to see files in nested folders
+//        		String filePath = child.getPathDisplay();
+//
+//        		 if (child instanceof FileMetadata &&
+//        	               filePath.length() > dir.toString().length()) {
+//                   filePath = filePath.substring(dir.toString().length());
+//                } else {
+//                   filePath = child.getName();
+//                }
+//
+//                list.add(dir.resolve(filePath));
+        	}
+        }
+        
         //noinspection AnonymousInnerClassWithTooManyMethods
         return new DirectoryStream<Path>()
         {
@@ -277,12 +334,30 @@ public final class DropBoxFileSystemDriver
      * @param modes the modes to check for, if any
      * @throws IOException filesystem level error, or a plain I/O error
      * @see FileSystemProvider#checkAccess(Path, AccessMode...)
+     * 
+     * Function called in the Files.exists()
+     * line 2382 http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/file/be30cb2a3088/src/share/classes/java/nio/file/Files.java
      */
     @Override
     public void checkAccess(final Path path, final AccessMode... modes)
         throws IOException
     {
         final String target = path.toRealPath().toString();
+        
+       	//Note: Metadata for the root folder is unsupported. 
+    	// Source : https://www.dropbox.com/developers/documentation/http/documentation
+    if(target.equals("/"))
+    {
+    	  try {
+    		  ListFolderResult rootFolderResult = client.files().listFolder("");
+    		  
+    		  return;
+    		    
+          } catch (DbxException e) {
+              throw DropBoxIOException.wrap(e);
+          }
+    	  
+    }
 
         final Metadata metadata = getMetadata(target);
 
@@ -319,10 +394,9 @@ public final class DropBoxFileSystemDriver
     public void close()
         throws IOException
     {
-        // TODO: what to do here? DbxClient does not implement Closeable :(
+// TODO: what to do here? DbxClient does not implement Closeable :(
     }
 
-    @Nonnull
     @Override
     public Object getPathMetadata(final Path path)
         throws IOException
@@ -332,5 +406,11 @@ public final class DropBoxFileSystemDriver
         } catch (DbxException e) {
             throw DropBoxIOException.wrap(e);
         }
+    }
+    
+    @Override
+    public WatchService newWatchService()
+    {
+    	return new DropboxWatchService(client);
     }
 }

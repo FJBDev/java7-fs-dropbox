@@ -4,7 +4,6 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.v1.DbxClientV1;
 import com.dropbox.core.v2.files.UploadUploader;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
@@ -38,7 +37,7 @@ public final class DropBoxOutputStream
     private final UploadUploader uploader;
     private final OutputStream out;
 
-    public DropBoxOutputStream(@Nonnull final UploadUploader uploader)
+    public DropBoxOutputStream(final UploadUploader uploader)
     {
 
         this.uploader = Objects.requireNonNull(uploader);

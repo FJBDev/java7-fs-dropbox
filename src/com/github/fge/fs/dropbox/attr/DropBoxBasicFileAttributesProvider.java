@@ -5,7 +5,6 @@ import com.dropbox.core.v2.files.FolderMetadata;
 import com.dropbox.core.v2.files.Metadata;
 import com.github.fge.filesystem.attributes.provider.BasicFileAttributesProvider;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -23,7 +22,7 @@ public final class DropBoxBasicFileAttributesProvider
 {
     private final Metadata metadata;
 
-    public DropBoxBasicFileAttributesProvider(@Nonnull final Metadata metadata) throws IOException
+    public DropBoxBasicFileAttributesProvider(final Metadata metadata) throws IOException
     {
         this.metadata = metadata;
     }

@@ -3,13 +3,9 @@ package com.github.fge.fs.dropbox.misc;
 import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.v1.DbxClientV1;
 import com.dropbox.core.v2.files.FileMetadata;
-import com.github.fge.filesystem.driver.FileSystemDriver;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
 
 /**
  * Wrapper over {@link DbxClientV1.Downloader} extending {@link InputStream}
@@ -31,7 +27,6 @@ import java.nio.file.Path;
  *
  */
 @SuppressWarnings("HtmlTagCanBeJavadocTag")
-@ParametersAreNonnullByDefault
 public final class DropBoxInputStream
     extends InputStream
 {

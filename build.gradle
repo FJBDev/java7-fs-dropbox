@@ -63,7 +63,7 @@ repositories {
 dependencies {
     compile files('libs/java7-fs-base-0.0.3.jar')
 
-    compile(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "3.0.4")
+    compile(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "7.0.0")
     compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13")
     compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14")
     compile(group: "org.json", name: "json", version: "20201115")

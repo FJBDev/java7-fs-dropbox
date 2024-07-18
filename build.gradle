@@ -63,10 +63,11 @@ repositories {
 dependencies {
     compile files('libs/java7-fs-base-0.0.3.jar')
 
-    compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
-        version: "3.0.4")
-    provided(group: "com.google.code.findbugs", name: "jsr305",
-        version: "3.0.0")
+    compile(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "3.0.4")
+    compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13")
+    compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14")
+    compile(group: "org.json", name: "json", version: "20201115")
+    provided(group: "com.google.code.findbugs", name: "jsr305", version: "3.0.0")
     testCompile(group: "org.testng", name: "testng", version: "6.8.8") {
         exclude(group: "junit", module: "junit")
         exclude(group: "org.beanshell", module: "bsh")
@@ -108,33 +109,5 @@ wrapper {
 task pom {
 doLast{
     pom {}.writeTo("${projectDir}/pom.xml")
-}
-}
-
-/*
- * SIGNING
- */
-
-project.ext {
-    gitrwscm = sprintf("git@github.com:fge/%s", name)
-    gitroscm = sprintf("https://github.com/fge/%s.git", name)
-    projectURL = sprintf("https://github.com/fge/%s", name)
-    sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-    sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
-}
-
-task checkSigningRequirements  {
-doLast{
-    def requiredProperties = [ "sonatypeUsername", "sonatypePassword" ]
-    def noDice = false
-    requiredProperties.each {
-        if (project.properties[it] == null) {
-            noDice = true
-            System.err.printf("property \"%s\" is not defined!")
-        }
-    }
-    if (noDice)
-        throw new IllegalStateException("missing required properties for " +
-            "upload")
 }
 }

@@ -74,7 +74,7 @@ public class FileSystemTest {
         }
     }
 
-    @Test(expectedExceptions = DropBoxIOException.class)
+    @Test
     public void testDirectoryStreamRoot() throws IOException {
         try (final FileSystem dropboxfs = provider.newFileSystem(uri, env)) {
             Files.newDirectoryStream(dropboxfs.getPath(""));

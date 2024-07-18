@@ -35,6 +35,7 @@ buildscript {
 apply(plugin: "java")
 apply(plugin: "maven")
 apply(plugin: "signing")
+apply(plugin: "osgi")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
@@ -46,8 +47,8 @@ apply(plugin: "info.solidsoft.pitest")
 group = "com.github.fge"
 version = "0.0.3"
 description = "FileSystem implementation over DropBox"
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8" // defaults to sourceCompatibility
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7" // defaults to sourceCompatibility
 
 /*
  * Repositories to use
@@ -61,12 +62,10 @@ repositories {
  * List of dependencies
  */
 dependencies {
-    provided(group: "com.github.fge", name: "java7-fs-base",
+    compile(group: "com.github.fge", name: "java7-fs-base",
         version: "0.0.3")
     compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
-        version: "3.1.4")
-    compile(group: "org.json", name: "json", version: "20190722")
-    compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.12")
+        version: "3.0.4")
     provided(group: "com.google.code.findbugs", name: "jsr305",
         version: "3.0.0")
     testCompile(group: "org.testng", name: "testng", version: "6.8.8") {
@@ -118,7 +117,7 @@ artifacts {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "6.8.2"
+    gradleVersion = "2.2"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 

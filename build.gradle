@@ -33,7 +33,6 @@ buildscript {
 }
 
 apply(plugin: "java")
-apply(plugin: "maven")
 apply(plugin: "signing")
 apply(plugin: "osgi")
 apply(plugin: "idea")
@@ -47,8 +46,8 @@ apply(plugin: "info.solidsoft.pitest")
 group = "com.github.fge"
 version = "0.0.3"
 description = "FileSystem implementation over DropBox"
-sourceCompatibility = "11"
-targetCompatibility = "11" // defaults to sourceCompatibility
+sourceCompatibility = "17"
+targetCompatibility = "17" // defaults to sourceCompatibility
 
 /*
  * Repositories to use
@@ -102,7 +101,7 @@ artifacts {
 }
 
 wrapper {
-    gradleVersion = "5.6.4"
+    gradleVersion = "6.9.3"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
@@ -138,31 +137,6 @@ doLast{
         throw new IllegalStateException("missing required properties for " +
             "upload")
 }
-}
-
-uploadArchives {
-    dependsOn(checkSigningRequirements)
-    repositories {
-        mavenDeployer {
-            beforeDeployment {
-                MavenDeployment deployment -> signing.signPom(deployment)
-            }
-
-            repository(url: "${sonatypeStaging}") {
-                authentication(
-                    userName: project.properties["sonatypeUsername"],
-                    password: project.properties["sonatypePassword"]
-                )
-            }
-
-            snapshotRepository(url: "${sonatypeSnapshots}") {
-                authentication(
-                    userName: project.properties["sonatypeUsername"],
-                    password: project.properties["sonatypePassword"]
-                )
-            }
-        }
-    }
 }
 
 /*

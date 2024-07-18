@@ -101,7 +101,7 @@ artifacts {
 }
 
 wrapper {
-    gradleVersion = "6.9.3"
+    gradleVersion = "6.6"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 

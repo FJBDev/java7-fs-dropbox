@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2020 Frédéric Bard
+ * Copyright (C) 2020 Frederic Bard
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -18,7 +18,7 @@ package com.github.fge.fs.dropbox.driver;
 public class ListFolderLongpollResult {
 
    private boolean _changes;
-   private Long    _backoff;
+   private Long _backoff;
 
    public ListFolderLongpollResult(final boolean changes, final Long backoff) {
       _changes = changes;

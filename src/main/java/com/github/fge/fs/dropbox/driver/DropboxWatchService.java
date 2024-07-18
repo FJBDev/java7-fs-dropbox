@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2020 Frédéric Bard
+ * Copyright (C) 2020 Frederic Bard
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -45,14 +45,14 @@ import org.json.JSONObject;
 
 public class DropboxWatchService implements WatchService {
 
-   private DbxClientV2         _dropboxClient;
-   private AtomicBoolean       _hasChanges;
-   private boolean             _continuePolling;
+   private DbxClientV2 _dropboxClient;
+   private AtomicBoolean _hasChanges;
+   private boolean _continuePolling;
 
    private CloseableHttpClient _httpClient;
 
    public DropboxWatchService(final DbxClientV2 client) {
-	   _dropboxClient = client;
+      _dropboxClient = client;
       _httpClient = HttpClientBuilder.create().build();
    }
 
@@ -61,9 +61,9 @@ public class DropboxWatchService implements WatchService {
     * Dropbox with the given path.
     *
     * @param dbxClient
-    *           Dropbox client to use for fetching the latest cursor
+    *                  Dropbox client to use for fetching the latest cursor
     * @param path
-    *           path to directory in Dropbox
+    *                  path to directory in Dropbox
     * @return cursor for listing changes to the given Dropbox directory
     */
    private String getLatestCursor(final String path)
@@ -83,15 +83,15 @@ public class DropboxWatchService implements WatchService {
    @Override
    public void close() throws IOException {
 
-      //We need to set this to false and we close the http client below
-      //otherwise we will poll again.
+      // We need to set this to false and we close the http client below
+      // otherwise we will poll again.
       _continuePolling = false;
 
       if (_httpClient != null) {
          try {
             _httpClient.close();
          } catch (final Exception e) {
-        	 throw new IOException("Error when closing the httpclient", e);
+            throw new IOException("Error when closing the httpclient", e);
          }
       }
    }
@@ -101,9 +101,9 @@ public class DropboxWatchService implements WatchService {
     * cursor was retrieved.
     *
     * @param dbxClient
-    *           Dropbox client to use for fetching folder changes
+    *                  Dropbox client to use for fetching folder changes
     * @param cursor
-    *           Latest cursor received since last set of changes
+    *                  Latest cursor received since last set of changes
     * @return latest cursor after changes
     */
    private String examineChanges(String cursor)
@@ -168,7 +168,8 @@ public class DropboxWatchService implements WatchService {
 
          return listFolderLongpollResult;
       } catch (final Exception e) {
-         //Reached when the dropbox folder watch will be stopped, socket closed for example
+         // Reached when the dropbox folder watch will be stopped, socket closed for
+         // example
       }
 
       return null;
@@ -187,54 +188,57 @@ public class DropboxWatchService implements WatchService {
    }
 
    /**
-    * See listFolderLongpoll() description to understand why we can't use the Dropbox SDK
+    * See listFolderLongpoll() description to understand why we can't use the
+    * Dropbox SDK
     * function listFolderLongpoll().
     */
    @Override
    public WatchKey take() throws InterruptedException {
-	   
+
       if (_httpClient == null) {
-    	  throw new ClosedWatchServiceException();
+         throw new ClosedWatchServiceException();
       }
-      
+
       _hasChanges = new AtomicBoolean(false);
       _continuePolling = true;
 
       while (_hasChanges.get() == false && _continuePolling) {
-         try {        	 
-             if (_httpClient == null) {            	 
-            	 throw new ClosedWatchServiceException();
-             }      
+         try {
+            if (_httpClient == null) {
+               throw new ClosedWatchServiceException();
+            }
             final String cursor = getLatestCursor("");
 
-            //  final ListFolderLongpollResult listFolderLongpollResult = DropboxClient.getDefault().files().listFolderLongpoll(cursor);
-            //  if (listFolderLongpollResult.getChanges()) {
+            // final ListFolderLongpollResult listFolderLongpollResult =
+            // DropboxClient.getDefault().files().listFolderLongpoll(cursor);
+            // if (listFolderLongpollResult.getChanges()) {
 
             final ListFolderLongpollResult listFolderLongpollResult = listFolderLongpoll(cursor);
-            
+
             if (listFolderLongpollResult == null) {
-            	_continuePolling = false;   
-            	continue;
+               _continuePolling = false;
+               continue;
             }
             if (listFolderLongpollResult.getChanges()) {
                examineChanges(cursor);
             }
 
-            // we were asked to back off from our polling, wait the requested amount of seconds
+            // we were asked to back off from our polling, wait the requested amount of
+            // seconds
             // before issuing another longpoll request.
             final Long backoff = listFolderLongpollResult.getBackoff();
-            if (backoff != null) {               
-              // backing off for %d secs...\n", backoff.longValue());s
-              Thread.sleep(TimeUnit.SECONDS.toMillis(backoff));               
+            if (backoff != null) {
+               // backing off for %d secs...\n", backoff.longValue());s
+               Thread.sleep(TimeUnit.SECONDS.toMillis(backoff));
             }
-         } catch (InterruptedException e) {        	 
-        	 throw e;
+         } catch (InterruptedException e) {
+            throw e;
          } catch (final DbxException | IOException ex) {
          }
       }
 
-      //We return an empty Watchkey. The goal here is that we only
-      //want to notify that some changes happened
+      // We return an empty Watchkey. The goal here is that we only
+      // want to notify that some changes happened
       final WatchKey dropboxWatchKey = new WatchKey() {
 
          @Override
@@ -270,4 +274,3 @@ public class DropboxWatchService implements WatchService {
       return dropboxWatchKey;
    }
 }
-

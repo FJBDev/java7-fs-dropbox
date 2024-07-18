@@ -86,12 +86,12 @@ javadoc.options.links("http://dropbox.github.io/dropbox-sdk-java/api-docs/v1.7.x
 
 /*
  * Necessary! Otherwise TestNG will not be used...
- */
 test {
     useTestNG() {
         useDefaultListeners = true
     }
 }
+ */
 
 pitest {
     pitestVersion = "1.1.2" // see https://github.com/hcoles/pitest/issues/150

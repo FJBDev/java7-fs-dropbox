@@ -62,7 +62,7 @@ repositories {
  * List of dependencies
  */
 dependencies {
-    provided(group: "com.github.fge", name: "java7-fs-base",
+    compile(group: "com.github.fge", name: "java7-fs-base",
         version: "0.0.1")
     compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
         version: "3.0.4")

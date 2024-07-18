@@ -62,8 +62,8 @@ repositories {
  * List of dependencies
  */
 dependencies {
-    compile(group: "com.github.fge", name: "java7-fs-base",
-        version: "0.0.1")
+    compile files('libs/java7-fs-base-0.0.3.jar')
+
     compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
         version: "3.0.4")
     provided(group: "com.google.code.findbugs", name: "jsr305",

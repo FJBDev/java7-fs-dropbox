@@ -65,7 +65,7 @@ dependencies {
 
     compile(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "7.0.0")
     compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13")
-    compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14")
+    compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.16")
     compile(group: "org.json", name: "json", version: "20240303")
     provided(group: "com.google.code.findbugs", name: "jsr305", version: "3.0.2")
     testCompile(group: "org.testng", name: "testng", version: "6.8.8") {

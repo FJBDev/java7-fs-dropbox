@@ -33,11 +33,10 @@ buildscript {
 }
 
 apply(plugin: "java")
-apply(plugin: "signing")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
-apply(plugin: "propdeps-maven")
+apply(plugin: "maven-publish")
 apply(plugin: "propdeps-idea")
 apply(plugin: "propdeps-eclipse")
 apply(plugin: "info.solidsoft.pitest")

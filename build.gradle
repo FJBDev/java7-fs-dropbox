@@ -34,7 +34,6 @@ buildscript {
 
 apply(plugin: "java")
 apply(plugin: "signing")
-apply(plugin: "osgi")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
@@ -63,6 +62,7 @@ repositories {
 dependencies {
     compile files('libs/java7-fs-base-0.0.3.jar')
 
+    implementation("biz.aQute.bnd.builder:biz.aQute.bnd.builder.gradle.plugin:7.0.0")
     compile(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "7.0.0")
     compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.14")
     compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.16")
@@ -102,7 +102,7 @@ artifacts {
 }
 
 wrapper {
-    gradleVersion = "5.6"
+    gradleVersion = "6.0"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 

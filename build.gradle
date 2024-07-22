@@ -68,7 +68,7 @@ dependencies {
     compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.16")
     compile(group: "org.json", name: "json", version: "20240303")
     provided(group: "com.google.code.findbugs", name: "jsr305", version: "3.0.2")
-    testCompile(group: "org.testng", name: "testng", version: "6.8.8") {
+    testCompile(group: "org.testng", name: "testng", version: "7.10.2") {
         exclude(group: "junit", module: "junit")
         exclude(group: "org.beanshell", module: "bsh")
         exclude(group: "org.yaml", module: "snakeyaml")

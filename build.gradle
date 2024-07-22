@@ -33,12 +33,10 @@ buildscript {
 }
 
 apply(plugin: "java")
-apply(plugin: "signing")
-apply(plugin: "osgi")
 apply(plugin: "idea")
 apply(plugin: "eclipse")
 apply(plugin: "propdeps")
-apply(plugin: "propdeps-maven")
+apply(plugin: "maven-publish")
 apply(plugin: "propdeps-idea")
 apply(plugin: "propdeps-eclipse")
 apply(plugin: "info.solidsoft.pitest")
@@ -61,22 +59,23 @@ repositories {
  * List of dependencies
  */
 dependencies {
-    compile files('libs/java7-fs-base-0.0.3.jar')
+    implementation files('libs/java7-fs-base-0.0.3.jar')
 
-    compile(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "7.0.0")
-    compile(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.14")
-    compile(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.16")
-    compile(group: "org.json", name: "json", version: "20240303")
+    implementation("biz.aQute.bnd.builder:biz.aQute.bnd.builder.gradle.plugin:7.0.0")
+    implementation(group: "com.dropbox.core", name: "dropbox-core-sdk", version: "7.0.0")
+    implementation(group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.14")
+    implementation(group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.16")
+    implementation(group: "org.json", name: "json", version: "20240303")
     provided(group: "com.google.code.findbugs", name: "jsr305", version: "3.0.2")
-    testCompile(group: "org.testng", name: "testng", version: "6.8.8") {
+    testImplementation(group: "org.testng", name: "testng", version: "6.8.8") {
         exclude(group: "junit", module: "junit")
         exclude(group: "org.beanshell", module: "bsh")
         exclude(group: "org.yaml", module: "snakeyaml")
     }
-    testCompile(group: "org.mockito", name: "mockito-core", version: "5.12.0")
-    testCompile(group: "org.assertj", name: "assertj-core", version: "3.26.3")
+    testImplementation(group: "org.mockito", name: "mockito-core", version: "5.12.0")
+    testImplementation(group: "org.assertj", name: "assertj-core", version: "3.26.3")
 
-    testCompile(group: "com.github.marschall", name: "memoryfilesystem", version: "2.8.0")
+    testImplementation(group: "com.github.marschall", name: "memoryfilesystem", version: "2.8.0")
 
 }
 
@@ -102,7 +101,7 @@ artifacts {
 }
 
 wrapper {
-    gradleVersion = "5.6"
+    gradleVersion = "6.9.4"
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
